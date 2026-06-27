@@ -13,6 +13,7 @@
   --display:"Sora","Plus Jakarta Sans",system-ui,sans-serif;
   --annual:#2E9E50; --mc:#E8472B; --urgent:#EBB12A; --unpaid:#15335E; --others:#1F9FE6;
   --holi:#5BAEE8;
+  --ph:#DC2626;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -83,10 +84,10 @@ body{
 .day.rest{background:rgba(20,33,50,.05)}
 .day.rest .num{color:var(--muted)}
 .day.wknd{box-shadow:0 0 0 2px var(--ink)}
-.day.hol{--c:var(--holi);color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);border-color:color-mix(in srgb,var(--c) 28%,#fff)}
-.day.hol .num{color:var(--c)}
-.day.hol .tag{font-size:8.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
-.mcd.hol{--c:var(--holi);color:var(--c);background:color-mix(in srgb,var(--c) 20%,#fff);border-color:color-mix(in srgb,var(--c) 34%,#fff);font-weight:800}
+.day.hol{overflow:hidden}
+.day.hol::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-top:13px solid var(--ph);border-left:13px solid transparent}
+.mcd.hol{overflow:hidden}
+.mcd.hol::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-top:8px solid var(--ph);border-left:8px solid transparent}
 .tchip.wk{color:#fff;background:var(--ink);border-color:var(--ink)}
 .tchip.wkframe{box-shadow:0 0 0 2px var(--ink)}
 .lchip.wkframe{box-shadow:0 0 0 2px var(--ink)}
@@ -111,7 +112,8 @@ body{
 .lchip.hday{background:linear-gradient(135deg, color-mix(in srgb,var(--c) 18%,#fff) 0 50%, #fff 50% 100%)}
 .lwk{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:1px 9px}
 .lrow.holrow{background:color-mix(in srgb,var(--holi) 6%,transparent)}
-.lchip.hol{color:var(--holi);background:color-mix(in srgb,var(--holi) 14%,#fff);border-color:color-mix(in srgb,var(--holi) 26%,#fff)}
+.lchip.hol{position:relative;overflow:hidden;color:var(--ink);background:rgba(20,33,50,.05);border-color:rgba(20,33,50,.12);padding-right:15px}
+.lchip.hol::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-top:11px solid var(--ph);border-left:11px solid transparent}
 .lph{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--holi);border-radius:999px;padding:1px 9px}
 .yearcal{display:none;gap:14px;grid-template-columns:repeat(2,1fr);margin-top:6px}
 .mcal{border-radius:12px;padding:9px 10px 11px;background:rgba(255,255,255,.5);border:1px solid rgba(20,33,50,.08)}
@@ -327,7 +329,7 @@ function renderChrome(){
 function renderKeys(){
   const wrap=document.getElementById("keys");wrap.innerHTML="";
   ORDER.forEach(k=>{const c=cvar(TYPE_VAR[k]);const el=document.createElement("span");el.className="key";el.style.color=c;el.style.background=`color-mix(in srgb, ${c} 13%, #fff)`;el.style.border=`1px solid color-mix(in srgb, ${c} 26%, #fff)`;el.innerHTML=`<i style="background:${c}"></i>${TYPE_LABEL[lang][k]}`;wrap.appendChild(el);});
-  const hc=cvar("--holi");const hel=document.createElement("span");hel.className="key";hel.style.color=hc;hel.style.background=`color-mix(in srgb, ${hc} 13%, #fff)`;hel.style.border=`1px solid color-mix(in srgb, ${hc} 26%, #fff)`;hel.innerHTML=`<i style="background:${hc}"></i>${S().holiday}`;wrap.appendChild(hel);
+  const hel=document.createElement("span");hel.className="key";hel.style.color="var(--ink)";hel.style.background="rgba(20,33,50,.05)";hel.style.border="1px solid rgba(20,33,50,.12)";hel.innerHTML=`<i style="width:0;height:0;border-top:12px solid var(--ph);border-left:12px solid transparent;background:none;border-radius:0"></i>${S().holiday}`;wrap.appendChild(hel);
 }
 function renderLegend(){
   const wrap=document.getElementById("legend");wrap.innerHTML="";
@@ -390,7 +392,7 @@ function miniCalHTML(m,recs){
     const list=map[day];
     if(!list){
       const hol=holsFor(sel)[year+"-"+pad2(m+1)+"-"+pad2(day)];
-      if(hol)g+=`<span class="mcd hol" title="${holName(hol)}">${day}</span>`;
+      if(hol)g+=`<span class="mcd hol${rest}" title="${holName(hol)}">${day}</span>`;
       else g+=`<span class="mcd${rest}">${day}</span>`;
       continue;
     }
@@ -428,7 +430,7 @@ function renderMonth(stage){
     const list=map[day];
     const hol=holsFor(sel)[year+"-"+pad2(selMonth+1)+"-"+pad2(day)];
     if(!list){
-      if(hol){cells+=`<div class="day hol" title="${holName(hol)}"><span class="num">${day}</span></div>`;}
+      if(hol){cells+=`<div class="day hol ${rest}" title="${holName(hol)}"><span class="num">${day}</span></div>`;}
       else cells+=`<div class="day ${rest}"><span class="num">${day}</span></div>`;
       continue;
     }
@@ -446,7 +448,7 @@ function renderMonth(stage){
   ORDER.filter(k=>present.includes(k)).forEach(k=>{const c=cvar(TYPE_VAR[k]);foot+=`<span class="key" style="color:${c};background:color-mix(in srgb,${c} 13%,#fff);border:1px solid color-mix(in srgb,${c} 26%,#fff)"><i style="background:${c}"></i>${TYPE_LABEL[lang][k]}</span>`;});
   const wkRecs=recs.filter(r=>isWeekend(year,selMonth,+r.d.slice(8,10)));
   if(wkRecs.length)foot+=`<span class="key" style="color:var(--ink);background:rgba(255,255,255,.6);box-shadow:0 0 0 2px var(--ink)">${S().wkLegend}</span>`;
-  if(Object.keys(holsFor(sel)).some(d=>+d.slice(0,4)===year&&+d.slice(5,7)-1===selMonth))foot+=`<span class="key" style="color:var(--holi);background:color-mix(in srgb,var(--holi) 13%,#fff);border:1px solid color-mix(in srgb,var(--holi) 26%,#fff)"><i style="background:var(--holi)"></i>${S().holiday}</span>`;
+  if(Object.keys(holsFor(sel)).some(d=>+d.slice(0,4)===year&&+d.slice(5,7)-1===selMonth))foot+=`<span class="key" style="color:var(--ink);background:rgba(20,33,50,.05);border:1px solid rgba(20,33,50,.12)"><i style="width:0;height:0;border-top:12px solid var(--ph);border-left:12px solid transparent;background:none;border-radius:0"></i>${S().holiday}</span>`;
   const noLeaveNote=present.length?"":`<span class="meta" style="color:var(--muted);font-size:12px;align-self:center">${S().noLeave}</span>`;
   let meta=S().mMeta(selMonth,year,S().days(totalDays(recs)));
   if(wkRecs.length){const wkMc=wkRecs.filter(r=>r.t==="mc").length;meta+=lang==="en"?` · ${S().days(totalDays(wkRecs))} on weekend${wkMc?` (${wkMc} MC)`:""}`:` · 周末 ${S().days(totalDays(wkRecs))}${wkMc?`（含 MC ${wkMc}）`:""}`;}
