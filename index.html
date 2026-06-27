@@ -81,6 +81,46 @@ body{
 .day.we{background:rgba(20,33,50,.025)}
 .day.rest{background:rgba(20,33,50,.05)}
 .day.rest .num{color:var(--muted)}
+.day.wknd{box-shadow:0 0 0 2px var(--ink)}
+.tchip.wk{color:#fff;background:var(--ink);border-color:var(--ink)}
+.stage-head{flex-wrap:wrap}
+.vseg{margin-left:auto}
+.ylist{display:flex;flex-direction:column;margin-top:2px}
+.ymhead{display:flex;align-items:center;gap:8px;padding:9px 4px 6px;border-bottom:1px solid rgba(20,33,50,.10);margin-top:8px;cursor:pointer}
+.ymhead:hover .ymname{color:var(--ink)}
+.ymname{font-family:var(--display);font-weight:800;font-size:13.5px;color:var(--blue)}
+.ymtot{font-size:10.5px;font-weight:800;color:var(--muted);background:rgba(20,33,50,.06);border-radius:999px;padding:1px 8px}
+.ymwk{font-size:10px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:1px 8px}
+.ymgo{margin-left:auto;color:var(--muted);font-weight:800;font-size:15px}
+.ymhead.empty{opacity:.45;cursor:default;border-bottom-color:rgba(20,33,50,.05)}
+.ymhead.empty .ymname{color:var(--muted);font-weight:700}
+.ymrows{display:flex;flex-direction:column;padding:3px 0}
+.lrow{display:flex;align-items:center;gap:10px;padding:6px 9px;border-radius:8px}
+.lrow:nth-child(even){background:rgba(20,33,50,.022)}
+.lrow.wk{background:rgba(20,33,50,.07);box-shadow:inset 2px 0 0 var(--ink)}
+.ldate{font-family:var(--display);font-weight:700;font-size:12.5px;color:var(--ink);min-width:62px}
+.ldate .dw{color:var(--muted);font-weight:600;margin-left:6px}
+.lchip{font-family:var(--display);font-weight:800;font-size:11px;padding:2px 9px;border-radius:8px;border:1px solid transparent;color:var(--c);background:color-mix(in srgb,var(--c) 15%,#fff);border-color:color-mix(in srgb,var(--c) 28%,#fff)}
+.lwk{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:1px 9px}
+.yearcal{display:none;gap:14px;grid-template-columns:repeat(2,1fr);margin-top:6px}
+.mcal{border-radius:12px;padding:9px 10px 11px;background:rgba(255,255,255,.5);border:1px solid rgba(20,33,50,.08)}
+.mcal.off{opacity:.5;background:rgba(20,33,50,.015);border-color:transparent}
+.mcal[data-m]{cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.mcal[data-m]:hover{transform:translateY(-2px);box-shadow:0 8px 18px -12px rgba(20,33,50,.32);background:rgba(255,255,255,.75)}
+.mcal-h{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:7px}
+.mcal-t{font-family:var(--display);font-weight:800;font-size:12.5px;color:var(--blue)}
+.mcal-n{font-size:9.5px;font-weight:800;color:var(--muted);white-space:nowrap}
+.mcal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mch{font-family:var(--display);font-weight:800;font-size:8.5px;color:var(--muted);text-align:center;padding-bottom:1px}
+.mcd{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:600;font-size:10.5px;color:var(--ink);border-radius:6px;background:rgba(255,255,255,.5);border:1px solid rgba(20,33,50,.05)}
+.mcd.blank{background:transparent;border-color:transparent}
+.mcd.rest{background:rgba(20,33,50,.05);color:var(--muted)}
+.mcd.has{--c:var(--annual);color:var(--c);background:color-mix(in srgb,var(--c) 20%,#fff);border-color:color-mix(in srgb,var(--c) 34%,#fff);font-weight:800}
+.mcd.multi{background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 24%,#fff),color-mix(in srgb,var(--c) 24%,#fff) 3px,#fff 3px,#fff 6px)}
+.mcd.wknd{box-shadow:0 0 0 2px var(--ink)}
+.mcd .hf{position:absolute;top:0;right:1px;font-style:normal;font-size:7px;font-weight:800}
+@media(min-width:720px){.yearcal{display:grid;grid-template-columns:repeat(3,1fr)}.ylist{display:none}}
+@media(min-width:1080px){.card{max-width:1040px}}
 .day .num{font-family:var(--display);font-weight:700;font-size:12px;color:var(--ink)}
 .day.we .num{color:var(--muted)}
 .day.has{--c:var(--annual);color:var(--c);background:color-mix(in srgb, var(--c) 17%, #fff);border-color:color-mix(in srgb, var(--c) 30%, #fff)}
@@ -124,6 +164,7 @@ body{
   <div class="pt-note" id="ptNote"></div>
   <div class="databar">
     <button class="ghost" id="dataToggle"></button>
+    <button class="ghost" id="exportBtn"></button>
     <span class="dstat" id="dataStatus"></span>
   </div>
   <div class="datapanel" id="dataPanel" hidden>
@@ -196,12 +237,14 @@ let DATA=buildData(custom);
 const MONTH_CARD={en:["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],zh:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]};
 const MONTH_FULL={en:["January","February","March","April","May","June","July","August","September","October","November","December"],zh:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]};
 const DOWS={en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],zh:["周一","周二","周三","周四","周五","周六","周日"]};
+const WEEKDAY={en:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],zh:["周日","周一","周二","周三","周四","周五","周六"]};
+const WK1={en:["M","T","W","T","F","S","S"],zh:["一","二","三","四","五","六","日"]};
 const STR={
- en:{title:"Teacher Leave Calendar",sel:"Select Teacher",prompt:"👆 Select a teacher to view their leave across the year",back:"← Back to year",noLeave:"No leave this month",pt:"Part-time",rest:"Rest",ptNote:"11 full-time teachers",upload:"⤓ Upload data",dhint:`<b>CSV</b> — one record per line: <b>teacher, date, type, half</b>. Date: <b>2026-07-03</b> or <b>03/07/2026</b>. Type: annual / mc / urgent / unpaid / others. Half: leave blank or <b>0.5</b>. New years are added automatically; data is saved in this browser.`,addBtn:"Add data",clearBtn:"Clear uploads",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`Added ${r.added} · ${r.dup} duplicate(s) skipped${r.err?` · ${r.err} error line(s)`:""}`,ovMeta:(y)=>`${y} leave overview · tap a month for daily detail`,mMeta:(m,y,d)=>`${MONTH_FULL.en[m]} ${y} · ${d} total`,h2:(n,m)=>`${n} · ${MONTH_FULL.en[m]}`,sub:(y,r)=>`TOUCH English · Tap a teacher, then a month for daily detail · ${y} data: ${r}`,range:{2025:"full year",2026:"Jan–Jun"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+(n===1?" day":" days");}},
- zh:{title:"老师请假年历",sel:"选择老师",prompt:"👆 选择一位老师，查看 TA 的整年请假分布",back:"← 返回年历",noLeave:"本月无请假",pt:"兼职",rest:"休息",ptNote:"全职老师 11 位",upload:"⤓ 上传数据",dhint:`<b>CSV</b> 格式，每行一条：<b>老师, 日期, 假别, 半天</b>。日期 <b>2026-07-03</b> 或 <b>03/07/2026</b>。假别：annual / mc / urgent / unpaid / others。半天：留空 或 <b>0.5</b>。新年份会自动加入；数据保存在此浏览器本地。`,addBtn:"加入数据",clearBtn:"清除上传",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`已加入 ${r.added} 条 · 跳过重复 ${r.dup}${r.err?` · 错误 ${r.err} 行`:""}`,ovMeta:(y)=>`${y} 全年请假分布 · 点月份看每天明细`,mMeta:(m,y,d)=>`${y}年${MONTH_FULL.zh[m]} · 共 ${d}`,h2:(n,m)=>`${n} · ${MONTH_FULL.zh[m]}`,sub:(y,r)=>`TOUCH English · 点老师看整年分布，点月份看每天明细 · ${y} 数据：${r}`,range:{2025:"全年",2026:"1–6月"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+" 天";}}
+ en:{title:"Teacher Leave Calendar",sel:"Select Teacher",prompt:"👆 Select a teacher to view their leave across the year",back:"← Back to year",noLeave:"No leave this month",pt:"Part-time",rest:"Rest",ptNote:"11 full-time teachers",upload:"⤓ Upload data",dhint:`<b>CSV</b> — one record per line: <b>teacher, date, type, half</b>. Date: <b>2026-07-03</b> or <b>03/07/2026</b>. Type: annual / mc / urgent / unpaid / others. Half: leave blank or <b>0.5</b>. New years are added automatically; data is saved in this browser.`,addBtn:"Add data",clearBtn:"Clear uploads",exportBtn:"⤴ Export CSV",wk:"WE",wkLegend:"Weekend leave (Sat/Sun)",viewCards:"Overview",viewList:"Full year",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`Added ${r.added} · ${r.dup} duplicate(s) skipped${r.err?` · ${r.err} error line(s)`:""}`,ovMeta:(y)=>`${y} leave overview · tap a month for daily detail`,mMeta:(m,y,d)=>`${MONTH_FULL.en[m]} ${y} · ${d} total`,h2:(n,m)=>`${n} · ${MONTH_FULL.en[m]}`,sub:(y,r)=>`TOUCH English · Tap a teacher, then a month for daily detail · ${y} data: ${r}`,range:{2025:"full year",2026:"Jan–Jun"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+(n===1?" day":" days");}},
+ zh:{title:"老师请假年历",sel:"选择老师",prompt:"👆 选择一位老师，查看 TA 的整年请假分布",back:"← 返回年历",noLeave:"本月无请假",pt:"兼职",rest:"休息",ptNote:"全职老师 11 位",upload:"⤓ 上传数据",dhint:`<b>CSV</b> 格式，每行一条：<b>老师, 日期, 假别, 半天</b>。日期 <b>2026-07-03</b> 或 <b>03/07/2026</b>。假别：annual / mc / urgent / unpaid / others。半天：留空 或 <b>0.5</b>。新年份会自动加入；数据保存在此浏览器本地。`,addBtn:"加入数据",clearBtn:"清除上传",exportBtn:"⤴ 导出 CSV",wk:"周末",wkLegend:"周末请假（六/日）",viewCards:"总览",viewList:"全年明细",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`已加入 ${r.added} 条 · 跳过重复 ${r.dup}${r.err?` · 错误 ${r.err} 行`:""}`,ovMeta:(y)=>`${y} 全年请假分布 · 点月份看每天明细`,mMeta:(m,y,d)=>`${y}年${MONTH_FULL.zh[m]} · 共 ${d}`,h2:(n,m)=>`${n} · ${MONTH_FULL.zh[m]}`,sub:(y,r)=>`TOUCH English · 点老师看整年分布，点月份看每天明细 · ${y} 数据：${r}`,range:{2025:"全年",2026:"1–6月"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+" 天";}}
 };
 
-let lang="en", year=Math.max(...Object.keys(DATA).map(Number)), sel=null, selMonth=null;
+let lang="en", year=Math.max(...Object.keys(DATA).map(Number)), sel=null, selMonth=null, yearView="cards";
 const S=()=>STR[lang];
 const FT=()=>DATA[year].ft;
 function initials(name){const p=name.replace("Sir ","").trim();return p[0].toUpperCase();}
@@ -220,6 +263,7 @@ function isRest(teacher,y,m,day){
   const rest=(parity===0)?(inA?[1,2]:[0,1]):(inA?[0,1]:[1,2]);
   return rest.includes(dow);
 }
+function isWeekend(y,m,day){const d=new Date(Date.UTC(y,m,day)).getUTCDay();return d===0||d===6;}
 
 function dataRange(){
   const ft=FT();let min=12,max=-1;
@@ -237,6 +281,7 @@ function renderDataBar(){
   document.getElementById("dhint").innerHTML=S().dhint;
   document.getElementById("addBtn").textContent=S().addBtn;
   document.getElementById("clearBtn").textContent=`${S().clearBtn} (${custom.length})`;
+  document.getElementById("exportBtn").textContent=S().exportBtn;
   document.getElementById("pasteIn").placeholder=S().pastePh;
 }
 function renderChrome(){
@@ -267,9 +312,8 @@ function renderStage(){
   if(sel===null){stage.innerHTML=`<div class="prompt fade">${S().prompt}</div>`;return;}
   if(selMonth===null)renderYear(stage);else renderMonth(stage);
 }
-function renderYear(stage){
-  const recs=FT()[sel];const byMonth={};
-  recs.forEach(r=>{const m=+r.d.slice(5,7)-1;(byMonth[m]??={});(byMonth[m][r.t]??=0);byMonth[m][r.t]++;});
+function yearCardsHTML(recs){
+  const byMonth={};recs.forEach(r=>{const m=+r.d.slice(5,7)-1;(byMonth[m]??={});(byMonth[m][r.t]??=0);byMonth[m][r.t]++;});
   let cards="";
   for(let m=0;m<12;m++){
     const data=byMonth[m];
@@ -277,11 +321,56 @@ function renderYear(stage){
     const mRecs=recs.filter(r=>+r.d.slice(5,7)-1===m);
     let chips="";
     ORDER.forEach(k=>{if(data[k]){const c=cvar(TYPE_VAR[k]);chips+=`<span class="tchip" style="--c:${c}">${TYPE_LABEL[lang][k]} ${data[k]}</span>`;}});
+    const wkN=mRecs.filter(r=>isWeekend(year,m,+r.d.slice(8,10))).length;
+    if(wkN)chips+=`<span class="tchip wk">${S().wk} ${wkN}</span>`;
     cards+=`<div class="mcard" data-m="${m}"><div class="mtop"><span class="mname">${MONTH_CARD[lang][m]}</span><span class="total">${S().days(totalDays(mRecs))}</span></div><div class="tchips">${chips}</div></div>`;
   }
+  return `<div class="months">${cards}</div>`;
+}
+function yearListHTML(recs){
+  let out="";
+  for(let m=0;m<12;m++){
+    const mRecs=recs.filter(r=>+r.d.slice(5,7)-1===m).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
+    if(!mRecs.length){out+=`<div class="ymhead empty"><span class="ymname">${MONTH_FULL[lang][m]}</span><span class="ymtot">—</span></div>`;continue;}
+    const wk=mRecs.filter(r=>isWeekend(year,m,+r.d.slice(8,10)));
+    out+=`<div class="ymhead" data-m="${m}"><span class="ymname">${MONTH_FULL[lang][m]}</span><span class="ymtot">${S().days(totalDays(mRecs))}</span>${wk.length?`<span class="ymwk">${S().wk} ${wk.length}</span>`:""}<span class="ymgo">›</span></div><div class="ymrows">`;
+    mRecs.forEach(r=>{
+      const day=+r.d.slice(8,10),dow=new Date(Date.UTC(year,m,day)).getUTCDay(),c=cvar(TYPE_VAR[r.t]),we=isWeekend(year,m,day);
+      out+=`<div class="lrow${we?' wk':''}"><span class="ldate">${day}<span class="dw">${WEEKDAY[lang][dow]}</span></span><span class="lchip" style="--c:${c}">${TYPE_LABEL[lang][r.t]}${r.h?' ½':''}</span>${we?`<span class="lwk">${S().wk}</span>`:""}</div>`;
+    });
+    out+=`</div>`;
+  }
+  return `<div class="ylist">${out}</div>`;
+}
+function miniCalHTML(m,recs){
+  const map={};recs.filter(r=>+r.d.slice(5,7)-1===m).forEach(r=>{const d=+r.d.slice(8,10);(map[d]??=[]).push(r);});
+  const days=new Date(year,m+1,0).getDate();
+  const lead=(new Date(year,m,1).getDay()+6)%7;
+  let g="";
+  WK1[lang].forEach(d=>g+=`<span class="mch">${d}</span>`);
+  for(let i=0;i<lead;i++)g+=`<span class="mcd blank"></span>`;
+  for(let day=1;day<=days;day++){
+    const rest=isRest(sel,year,m,day)?" rest":"";
+    const list=map[day];
+    if(!list){g+=`<span class="mcd${rest}">${day}</span>`;continue;}
+    const we=isWeekend(year,m,day)?" wknd":"";
+    const multi=list.length>1?" multi":"";
+    const c=cvar(TYPE_VAR[list[0].t]);
+    g+=`<span class="mcd has${we}${multi}" style="--c:${c}">${day}${list.some(r=>r.h)?'<i class="hf">½</i>':''}</span>`;
+  }
+  const mRecs=recs.filter(r=>+r.d.slice(5,7)-1===m);
+  const tot=totalDays(mRecs),wkN=mRecs.filter(r=>isWeekend(year,m,+r.d.slice(8,10))).length,has=tot>0;
+  return `<div class="mcal${has?'':' off'}"${has?` data-m="${m}"`:''}><div class="mcal-h"><span class="mcal-t">${MONTH_FULL[lang][m]}</span>${has?`<span class="mcal-n">${S().days(tot)}${wkN?` · ${S().wk} ${wkN}`:''}</span>`:''}</div><div class="mcal-g">${g}</div></div>`;
+}
+function yearCalHTML(recs){let out="";for(let m=0;m<12;m++)out+=miniCalHTML(m,recs);return `<div class="yearcal">${out}</div>`;}
+function renderYear(stage){
+  const recs=FT()[sel];
+  const head=`<div class="stage-head"><span class="who">${initials(sel)}</span><div><h2>${sel}</h2><div class="meta">${S().ovMeta(year)}</div></div><div class="seg vseg"><button data-vw="cards"${yearView==="cards"?' class="on"':''}>${S().viewCards}</button><button data-vw="list"${yearView==="list"?' class="on"':''}>${S().viewList}</button></div></div>`;
+  const body=yearView==="list"?(yearCalHTML(recs)+yearListHTML(recs)):yearCardsHTML(recs);
   stage.className="stage fade";
-  stage.innerHTML=`<div class="stage-head"><span class="who">${initials(sel)}</span><div><h2>${sel}</h2><div class="meta">${S().ovMeta(year)}</div></div></div><div class="months">${cards}</div>`;
-  stage.querySelectorAll(".mcard[data-m]").forEach(c=>c.addEventListener("click",()=>{selMonth=+c.dataset.m;renderStage();}));
+  stage.innerHTML=head+body;
+  stage.querySelectorAll(".vseg button").forEach(b=>b.addEventListener("click",()=>{yearView=b.dataset.vw;renderStage();}));
+  stage.querySelectorAll("[data-m]").forEach(c=>c.addEventListener("click",()=>{selMonth=+c.dataset.m;renderStage();}));
   void stage.offsetWidth;
 }
 function renderMonth(stage){
@@ -296,20 +385,25 @@ function renderMonth(stage){
     const rest=isRest(sel,year,selMonth,day)?"rest":"";
     const list=map[day];
     if(!list){cells+=`<div class="day ${rest}"><span class="num">${day}</span></div>`;continue;}
+    const wk=isWeekend(year,selMonth,day)?" wknd":"";
     if(list.length===1){
       const r=list[0];const c=cvar(TYPE_VAR[r.t]);
-      cells+=`<div class="day has" style="--c:${c}"><span class="num">${day}</span>${r.h?`<span class="half">½</span>`:""}<span class="tag">${TYPE_LABEL[lang][r.t]}</span></div>`;
+      cells+=`<div class="day has${wk}" style="--c:${c}"><span class="num">${day}</span>${r.h?`<span class="half">½</span>`:""}<span class="tag">${TYPE_LABEL[lang][r.t]}</span></div>`;
     }else{
       let minis="";list.forEach(r=>{const c=cvar(TYPE_VAR[r.t]);minis+=`<span class="mini" style="--c:${c}">${TYPE_SHORT[r.t]}${r.h?'½':''}</span>`;});
-      cells+=`<div class="day"><span class="num">${day}</span><div class="minis">${minis}</div></div>`;
+      cells+=`<div class="day${wk}"><span class="num">${day}</span><div class="minis">${minis}</div></div>`;
     }
   }
   const present=[...new Set(recs.map(r=>r.t))];
   let foot="";
   ORDER.filter(k=>present.includes(k)).forEach(k=>{const c=cvar(TYPE_VAR[k]);foot+=`<span class="key" style="color:${c};background:color-mix(in srgb,${c} 13%,#fff);border:1px solid color-mix(in srgb,${c} 26%,#fff)"><i style="background:${c}"></i>${TYPE_LABEL[lang][k]}</span>`;});
+  const wkRecs=recs.filter(r=>isWeekend(year,selMonth,+r.d.slice(8,10)));
+  if(wkRecs.length)foot+=`<span class="key" style="color:#fff;background:var(--ink);border:1px solid var(--ink)">${S().wkLegend}</span>`;
   const noLeaveNote=present.length?"":`<span class="meta" style="color:var(--muted);font-size:12px;align-self:center">${S().noLeave}</span>`;
+  let meta=S().mMeta(selMonth,year,S().days(totalDays(recs)));
+  if(wkRecs.length){const wkMc=wkRecs.filter(r=>r.t==="mc").length;meta+=lang==="en"?` · ${S().days(totalDays(wkRecs))} on weekend${wkMc?` (${wkMc} MC)`:""}`:` · 周末 ${S().days(totalDays(wkRecs))}${wkMc?`（含 MC ${wkMc}）`:""}`;}
   stage.className="stage fade";
-  stage.innerHTML=`<div class="stage-head"><span class="who">${initials(sel)}</span><div><h2>${S().h2(sel,selMonth)}</h2><div class="meta">${S().mMeta(selMonth,year,S().days(totalDays(recs)))}</div></div><button class="back" id="backBtn">${S().back}</button></div><div class="cal-wrap"><div class="cal">${cells}</div><div class="cal-foot">${noLeaveNote}${foot}</div></div>`;
+  stage.innerHTML=`<div class="stage-head"><span class="who">${initials(sel)}</span><div><h2>${S().h2(sel,selMonth)}</h2><div class="meta">${meta}</div></div><button class="back" id="backBtn">${S().back}</button></div><div class="cal-wrap"><div class="cal">${cells}</div><div class="cal-foot">${noLeaveNote}${foot}</div></div>`;
   document.getElementById("backBtn").addEventListener("click",()=>{selMonth=null;renderStage();});
   void stage.offsetWidth;
 }
@@ -354,6 +448,19 @@ function clearData(){
   renderAll();
 }
 function showStatus(res){document.getElementById("dataStatus").textContent=S().statusMsg(res);}
+function exportCSV(){
+  const all=[];
+  for(const y in DATA){const ft=DATA[y].ft;for(const t in ft)ft[t].forEach(r=>all.push({teacher:t,date:r.d,type:r.t,half:r.h}));}
+  all.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.teacher<b.teacher?-1:a.teacher>b.teacher?1:0));
+  const esc=c=>/[",\n]/.test(c)?'"'+String(c).replace(/"/g,'""')+'"':c;
+  const lines=[["teacher","date","type","half"],...all.map(r=>[r.teacher,r.date,r.type,r.half?"0.5":""])];
+  const csv="\uFEFF"+lines.map(r=>r.map(esc).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=`touch-leave-data-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
 /* ---- events ---- */
 document.getElementById("yearSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;year=+b.dataset.year;selMonth=null;renderAll();});
 document.getElementById("langSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;lang=b.dataset.lang;document.documentElement.lang=lang;renderAll();});
@@ -361,6 +468,7 @@ document.getElementById("dataToggle").addEventListener("click",()=>{const p=docu
 document.getElementById("fileIn").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>showStatus(addData(rd.result));rd.readAsText(f);e.target.value="";});
 document.getElementById("addBtn").addEventListener("click",()=>{const ta=document.getElementById("pasteIn");const res=addData(ta.value);if(res.added)ta.value="";showStatus(res);});
 document.getElementById("clearBtn").addEventListener("click",clearData);
+document.getElementById("exportBtn").addEventListener("click",exportCSV);
 function renderAll(){renderYearSeg();renderChrome();renderDataBar();renderKeys();renderLegend();renderStage();}
 renderAll();
 </script>
