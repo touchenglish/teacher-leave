@@ -12,6 +12,7 @@
   --blue:#15357B; --ink:#16202E; --muted:#5C6779;
   --display:"Sora","Plus Jakarta Sans",system-ui,sans-serif;
   --annual:#2E9E50; --mc:#E8472B; --urgent:#EBB12A; --unpaid:#15335E; --others:#1F9FE6;
+  --holi:#5BAEE8;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -82,7 +83,13 @@ body{
 .day.rest{background:rgba(20,33,50,.05)}
 .day.rest .num{color:var(--muted)}
 .day.wknd{box-shadow:0 0 0 2px var(--ink)}
+.day.hol{--c:var(--holi);color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);border-color:color-mix(in srgb,var(--c) 28%,#fff)}
+.day.hol .num{color:var(--c)}
+.day.hol .tag{font-size:8.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
+.mcd.hol{--c:var(--holi);color:var(--c);background:color-mix(in srgb,var(--c) 20%,#fff);border-color:color-mix(in srgb,var(--c) 34%,#fff);font-weight:800}
 .tchip.wk{color:#fff;background:var(--ink);border-color:var(--ink)}
+.tchip.wkframe{box-shadow:0 0 0 2px var(--ink)}
+.lchip.wkframe{box-shadow:0 0 0 2px var(--ink)}
 .stage-head{flex-wrap:wrap}
 .vseg{margin-left:auto}
 .ylist{display:flex;flex-direction:column;margin-top:2px}
@@ -90,7 +97,7 @@ body{
 .ymhead:hover .ymname{color:var(--ink)}
 .ymname{font-family:var(--display);font-weight:800;font-size:13.5px;color:var(--blue)}
 .ymtot{font-size:10.5px;font-weight:800;color:var(--muted);background:rgba(20,33,50,.06);border-radius:999px;padding:1px 8px}
-.ymwk{font-size:10px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:1px 8px}
+.ymwk{font-size:10px;font-weight:800;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:999px;padding:0 7px}
 .ymgo{margin-left:auto;color:var(--muted);font-weight:800;font-size:15px}
 .ymhead.empty{opacity:.45;cursor:default;border-bottom-color:rgba(20,33,50,.05)}
 .ymhead.empty .ymname{color:var(--muted);font-weight:700}
@@ -102,6 +109,9 @@ body{
 .ldate .dw{color:var(--muted);font-weight:600;margin-left:6px}
 .lchip{font-family:var(--display);font-weight:800;font-size:11px;padding:2px 9px;border-radius:8px;border:1px solid transparent;color:var(--c);background:color-mix(in srgb,var(--c) 15%,#fff);border-color:color-mix(in srgb,var(--c) 28%,#fff)}
 .lwk{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:1px 9px}
+.lrow.holrow{background:color-mix(in srgb,var(--holi) 6%,transparent)}
+.lchip.hol{color:var(--holi);background:color-mix(in srgb,var(--holi) 14%,#fff);border-color:color-mix(in srgb,var(--holi) 26%,#fff)}
+.lph{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--holi);border-radius:999px;padding:1px 9px}
 .yearcal{display:none;gap:14px;grid-template-columns:repeat(2,1fr);margin-top:6px}
 .mcal{border-radius:12px;padding:9px 10px 11px;background:rgba(255,255,255,.5);border:1px solid rgba(20,33,50,.08)}
 .mcal.off{opacity:.5;background:rgba(20,33,50,.015);border-color:transparent}
@@ -240,8 +250,8 @@ const DOWS={en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],zh:["周一","周二"
 const WEEKDAY={en:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],zh:["周日","周一","周二","周三","周四","周五","周六"]};
 const WK1={en:["M","T","W","T","F","S","S"],zh:["一","二","三","四","五","六","日"]};
 const STR={
- en:{title:"Teacher Leave Calendar",sel:"Select Teacher",prompt:"👆 Select a teacher to view their leave across the year",back:"← Back to year",noLeave:"No leave this month",pt:"Part-time",rest:"Rest",ptNote:"11 full-time teachers",upload:"⤓ Upload data",dhint:`<b>CSV</b> — one record per line: <b>teacher, date, type, half</b>. Date: <b>2026-07-03</b> or <b>03/07/2026</b>. Type: annual / mc / urgent / unpaid / others. Half: leave blank or <b>0.5</b>. New years are added automatically; data is saved in this browser.`,addBtn:"Add data",clearBtn:"Clear uploads",exportBtn:"⤴ Export CSV",wk:"WE",wkLegend:"Weekend leave (Sat/Sun)",viewCards:"Overview",viewList:"Full year",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`Added ${r.added} · ${r.dup} duplicate(s) skipped${r.err?` · ${r.err} error line(s)`:""}`,ovMeta:(y)=>`${y} leave overview · tap a month for daily detail`,mMeta:(m,y,d)=>`${MONTH_FULL.en[m]} ${y} · ${d} total`,h2:(n,m)=>`${n} · ${MONTH_FULL.en[m]}`,sub:(y,r)=>`TOUCH English · Tap a teacher, then a month for daily detail · ${y} data: ${r}`,range:{2025:"full year",2026:"Jan–Jun"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+(n===1?" day":" days");}},
- zh:{title:"老师请假年历",sel:"选择老师",prompt:"👆 选择一位老师，查看 TA 的整年请假分布",back:"← 返回年历",noLeave:"本月无请假",pt:"兼职",rest:"休息",ptNote:"全职老师 11 位",upload:"⤓ 上传数据",dhint:`<b>CSV</b> 格式，每行一条：<b>老师, 日期, 假别, 半天</b>。日期 <b>2026-07-03</b> 或 <b>03/07/2026</b>。假别：annual / mc / urgent / unpaid / others。半天：留空 或 <b>0.5</b>。新年份会自动加入；数据保存在此浏览器本地。`,addBtn:"加入数据",clearBtn:"清除上传",exportBtn:"⤴ 导出 CSV",wk:"周末",wkLegend:"周末请假（六/日）",viewCards:"总览",viewList:"全年明细",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`已加入 ${r.added} 条 · 跳过重复 ${r.dup}${r.err?` · 错误 ${r.err} 行`:""}`,ovMeta:(y)=>`${y} 全年请假分布 · 点月份看每天明细`,mMeta:(m,y,d)=>`${y}年${MONTH_FULL.zh[m]} · 共 ${d}`,h2:(n,m)=>`${n} · ${MONTH_FULL.zh[m]}`,sub:(y,r)=>`TOUCH English · 点老师看整年分布，点月份看每天明细 · ${y} 数据：${r}`,range:{2025:"全年",2026:"1–6月"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+" 天";}}
+ en:{title:"Teacher Leave Calendar",sel:"Select Teacher",prompt:"👆 Select a teacher to view their leave across the year",back:"← Back to year",noLeave:"No leave this month",pt:"Part-time",rest:"Rest",ptNote:"11 full-time teachers",upload:"⤓ Upload data",dhint:`<b>CSV</b> — one record per line: <b>teacher, date, type, half</b>. Date: <b>2026-07-03</b> or <b>03/07/2026</b>. Type: annual / mc / urgent / unpaid / others. Half: leave blank or <b>0.5</b>. New years are added automatically; data is saved in this browser.`,addBtn:"Add data",clearBtn:"Clear uploads",exportBtn:"⤴ Export CSV",wk:"WE",wkLegend:"Weekend leave (Sat/Sun)",viewCards:"Overview",viewList:"Full year",holiday:"Public holiday",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`Added ${r.added} · ${r.dup} duplicate(s) skipped${r.err?` · ${r.err} error line(s)`:""}`,ovMeta:(y)=>`${y} leave overview · tap a month for daily detail`,mMeta:(m,y,d)=>`${MONTH_FULL.en[m]} ${y} · ${d} total`,h2:(n,m)=>`${n} · ${MONTH_FULL.en[m]}`,sub:(y,r)=>`TOUCH English · Tap a teacher, then a month for daily detail · ${y} data: ${r}`,range:{2025:"full year",2026:"Jan–Jun"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+(n===1?" day":" days");}},
+ zh:{title:"老师请假年历",sel:"选择老师",prompt:"👆 选择一位老师，查看 TA 的整年请假分布",back:"← 返回年历",noLeave:"本月无请假",pt:"兼职",rest:"休息",ptNote:"全职老师 11 位",upload:"⤓ 上传数据",dhint:`<b>CSV</b> 格式，每行一条：<b>老师, 日期, 假别, 半天</b>。日期 <b>2026-07-03</b> 或 <b>03/07/2026</b>。假别：annual / mc / urgent / unpaid / others。半天：留空 或 <b>0.5</b>。新年份会自动加入；数据保存在此浏览器本地。`,addBtn:"加入数据",clearBtn:"清除上传",exportBtn:"⤴ 导出 CSV",wk:"周末",wkLegend:"周末请假（六/日）",viewCards:"总览",viewList:"全年明细",holiday:"公共假期",pastePh:"Kuna, 2026-07-03, annual\nDarshni, 03/07/2026, mc, 0.5",statusMsg:(r)=>`已加入 ${r.added} 条 · 跳过重复 ${r.dup}${r.err?` · 错误 ${r.err} 行`:""}`,ovMeta:(y)=>`${y} 全年请假分布 · 点月份看每天明细`,mMeta:(m,y,d)=>`${y}年${MONTH_FULL.zh[m]} · 共 ${d}`,h2:(n,m)=>`${n} · ${MONTH_FULL.zh[m]}`,sub:(y,r)=>`TOUCH English · 点老师看整年分布，点月份看每天明细 · ${y} 数据：${r}`,range:{2025:"全年",2026:"1–6月"},days:(n)=>{const v=Number.isInteger(n)?n:n.toFixed(1);return v+" 天";}}
 };
 
 let lang="en", year=Math.max(...Object.keys(DATA).map(Number)), sel=null, selMonth=null, yearView="cards";
@@ -264,6 +274,26 @@ function isRest(teacher,y,m,day){
   return rest.includes(dow);
 }
 function isWeekend(y,m,day){const d=new Date(Date.UTC(y,m,day)).getUTCDay();return d===0||d===6;}
+/* public holidays + replacement days (2026). Online group = Kuna/Darshni/Yaamini; everyone else = offline. */
+const ONLINE=["Kuna","Darshni","Yaamini"];
+const HOL={
+ offline:{
+  "2026-01-01":{n:"New Year's Day"},"2026-02-17":{n:"Chinese New Year (Day 1)"},"2026-02-18":{n:"Chinese New Year (Day 2)"},
+  "2026-03-21":{n:"Hari Raya Aidilfitri (Day 1)"},"2026-03-25":{r:"Hari Raya"},"2026-05-01":{n:"Labour Day"},
+  "2026-05-27":{n:"Hari Raya Haji"},"2026-05-31":{n:"Wesak Day"},"2026-06-03":{r:"Agong's Birthday"},
+  "2026-09-01":{r:"Merdeka Day"},"2026-09-16":{n:"Malaysia Day"},"2026-11-09":{n:"Deepavali (Day 2)"},
+  "2026-11-10":{r:"Deepavali"},"2026-12-25":{n:"Christmas Day"}
+ },
+ online:{
+  "2026-01-01":{n:"New Year's Day"},"2026-02-01":{n:"Thaipusam"},"2026-02-18":{n:"Chinese New Year (Day 2)"},
+  "2026-03-21":{n:"Hari Raya Aidilfitri (Day 1)"},"2026-03-24":{r:"Hari Raya"},"2026-05-01":{n:"Labour Day"},
+  "2026-05-27":{n:"Hari Raya Haji"},"2026-06-02":{r:"Agong's Birthday"},"2026-08-30":{r:"Merdeka Day"},
+  "2026-09-16":{n:"Malaysia Day"},"2026-11-08":{n:"Deepavali (Day 1)"},"2026-11-11":{r:"Deepavali (Day 2)"},
+  "2026-12-25":{n:"Christmas Day"}
+ }
+};
+function holsFor(teacher){return ONLINE.includes(teacher)?HOL.online:HOL.offline;}
+function holName(h){return h?(h.r?(lang==="en"?`Repl. · ${h.r}`:`补假 · ${h.r}`):h.n):null;}
 
 function dataRange(){
   const ft=FT();let min=12,max=-1;
@@ -294,6 +324,7 @@ function renderChrome(){
 function renderKeys(){
   const wrap=document.getElementById("keys");wrap.innerHTML="";
   ORDER.forEach(k=>{const c=cvar(TYPE_VAR[k]);const el=document.createElement("span");el.className="key";el.style.color=c;el.style.background=`color-mix(in srgb, ${c} 13%, #fff)`;el.style.border=`1px solid color-mix(in srgb, ${c} 26%, #fff)`;el.innerHTML=`<i style="background:${c}"></i>${TYPE_LABEL[lang][k]}`;wrap.appendChild(el);});
+  const hc=cvar("--holi");const hel=document.createElement("span");hel.className="key";hel.style.color=hc;hel.style.background=`color-mix(in srgb, ${hc} 13%, #fff)`;hel.style.border=`1px solid color-mix(in srgb, ${hc} 26%, #fff)`;hel.innerHTML=`<i style="background:${hc}"></i>${S().holiday}`;wrap.appendChild(hel);
 }
 function renderLegend(){
   const wrap=document.getElementById("legend");wrap.innerHTML="";
@@ -320,23 +351,25 @@ function yearCardsHTML(recs){
     if(!data){cards+=`<div class="mcard is-empty"><div class="mtop"><span class="mname">${MONTH_CARD[lang][m]}</span></div><span class="none">—</span></div>`;continue;}
     const mRecs=recs.filter(r=>+r.d.slice(5,7)-1===m);
     let chips="";
-    ORDER.forEach(k=>{if(data[k]){const c=cvar(TYPE_VAR[k]);chips+=`<span class="tchip" style="--c:${c}">${TYPE_LABEL[lang][k]} ${data[k]}</span>`;}});
-    const wkN=mRecs.filter(r=>isWeekend(year,m,+r.d.slice(8,10))).length;
-    if(wkN)chips+=`<span class="tchip wk">${S().wk} ${wkN}</span>`;
+    ORDER.forEach(k=>{if(data[k]){const c=cvar(TYPE_VAR[k]);const wkk=mRecs.some(r=>r.t===k&&isWeekend(year,m,+r.d.slice(8,10)));chips+=`<span class="tchip${wkk?' wkframe':''}" style="--c:${c}">${TYPE_LABEL[lang][k]} ${data[k]}</span>`;}});
     cards+=`<div class="mcard" data-m="${m}"><div class="mtop"><span class="mname">${MONTH_CARD[lang][m]}</span><span class="total">${S().days(totalDays(mRecs))}</span></div><div class="tchips">${chips}</div></div>`;
   }
   return `<div class="months">${cards}</div>`;
 }
 function yearListHTML(recs){
-  let out="";
+  let out="";const holDict=holsFor(sel);
   for(let m=0;m<12;m++){
     const mRecs=recs.filter(r=>+r.d.slice(5,7)-1===m).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
     if(!mRecs.length){out+=`<div class="ymhead empty"><span class="ymname">${MONTH_FULL[lang][m]}</span><span class="ymtot">—</span></div>`;continue;}
     const wk=mRecs.filter(r=>isWeekend(year,m,+r.d.slice(8,10)));
     out+=`<div class="ymhead" data-m="${m}"><span class="ymname">${MONTH_FULL[lang][m]}</span><span class="ymtot">${S().days(totalDays(mRecs))}</span>${wk.length?`<span class="ymwk">${S().wk} ${wk.length}</span>`:""}<span class="ymgo">›</span></div><div class="ymrows">`;
-    mRecs.forEach(r=>{
-      const day=+r.d.slice(8,10),dow=new Date(Date.UTC(year,m,day)).getUTCDay(),c=cvar(TYPE_VAR[r.t]),we=isWeekend(year,m,day);
-      out+=`<div class="lrow${we?' wk':''}"><span class="ldate">${day}<span class="dw">${WEEKDAY[lang][dow]}</span></span><span class="lchip" style="--c:${c}">${TYPE_LABEL[lang][r.t]}${r.h?' ½':''}</span>${we?`<span class="lwk">${S().wk}</span>`:""}</div>`;
+    const items=mRecs.map(r=>({day:+r.d.slice(8,10),r}));
+    Object.keys(holDict).forEach(d=>{if(+d.slice(0,4)===year&&+d.slice(5,7)-1===m)items.push({day:+d.slice(8,10),hol:holDict[d]});});
+    items.sort((a,b)=>a.day-b.day);
+    items.forEach(it=>{
+      const dow=new Date(Date.UTC(year,m,it.day)).getUTCDay();
+      if(it.hol){out+=`<div class="lrow"><span class="ldate">${it.day}<span class="dw">${WEEKDAY[lang][dow]}</span></span><span class="lchip hol">${holName(it.hol)}</span></div>`;}
+      else{const r=it.r,c=cvar(TYPE_VAR[r.t]),we=isWeekend(year,m,it.day);out+=`<div class="lrow"><span class="ldate">${it.day}<span class="dw">${WEEKDAY[lang][dow]}</span></span><span class="lchip${we?' wkframe':''}" style="--c:${c}">${TYPE_LABEL[lang][r.t]}${r.h?' ½':''}</span></div>`;}
     });
     out+=`</div>`;
   }
@@ -352,7 +385,12 @@ function miniCalHTML(m,recs){
   for(let day=1;day<=days;day++){
     const rest=isRest(sel,year,m,day)?" rest":"";
     const list=map[day];
-    if(!list){g+=`<span class="mcd${rest}">${day}</span>`;continue;}
+    if(!list){
+      const hol=holsFor(sel)[year+"-"+pad2(m+1)+"-"+pad2(day)];
+      if(hol)g+=`<span class="mcd hol" title="${holName(hol)}">${day}</span>`;
+      else g+=`<span class="mcd${rest}">${day}</span>`;
+      continue;
+    }
     const we=isWeekend(year,m,day)?" wknd":"";
     const multi=list.length>1?" multi":"";
     const c=cvar(TYPE_VAR[list[0].t]);
@@ -384,7 +422,12 @@ function renderMonth(stage){
   for(let day=1;day<=days;day++){
     const rest=isRest(sel,year,selMonth,day)?"rest":"";
     const list=map[day];
-    if(!list){cells+=`<div class="day ${rest}"><span class="num">${day}</span></div>`;continue;}
+    const hol=holsFor(sel)[year+"-"+pad2(selMonth+1)+"-"+pad2(day)];
+    if(!list){
+      if(hol){cells+=`<div class="day hol" title="${holName(hol)}"><span class="num">${day}</span></div>`;}
+      else cells+=`<div class="day ${rest}"><span class="num">${day}</span></div>`;
+      continue;
+    }
     const wk=isWeekend(year,selMonth,day)?" wknd":"";
     if(list.length===1){
       const r=list[0];const c=cvar(TYPE_VAR[r.t]);
@@ -398,7 +441,8 @@ function renderMonth(stage){
   let foot="";
   ORDER.filter(k=>present.includes(k)).forEach(k=>{const c=cvar(TYPE_VAR[k]);foot+=`<span class="key" style="color:${c};background:color-mix(in srgb,${c} 13%,#fff);border:1px solid color-mix(in srgb,${c} 26%,#fff)"><i style="background:${c}"></i>${TYPE_LABEL[lang][k]}</span>`;});
   const wkRecs=recs.filter(r=>isWeekend(year,selMonth,+r.d.slice(8,10)));
-  if(wkRecs.length)foot+=`<span class="key" style="color:#fff;background:var(--ink);border:1px solid var(--ink)">${S().wkLegend}</span>`;
+  if(wkRecs.length)foot+=`<span class="key" style="color:var(--ink);background:rgba(255,255,255,.6);box-shadow:0 0 0 2px var(--ink)">${S().wkLegend}</span>`;
+  if(Object.keys(holsFor(sel)).some(d=>+d.slice(0,4)===year&&+d.slice(5,7)-1===selMonth))foot+=`<span class="key" style="color:var(--holi);background:color-mix(in srgb,var(--holi) 13%,#fff);border:1px solid color-mix(in srgb,var(--holi) 26%,#fff)"><i style="background:var(--holi)"></i>${S().holiday}</span>`;
   const noLeaveNote=present.length?"":`<span class="meta" style="color:var(--muted);font-size:12px;align-self:center">${S().noLeave}</span>`;
   let meta=S().mMeta(selMonth,year,S().days(totalDays(recs)));
   if(wkRecs.length){const wkMc=wkRecs.filter(r=>r.t==="mc").length;meta+=lang==="en"?` · ${S().days(totalDays(wkRecs))} on weekend${wkMc?` (${wkMc} MC)`:""}`:` · 周末 ${S().days(totalDays(wkRecs))}${wkMc?`（含 MC ${wkMc}）`:""}`;}
